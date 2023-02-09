@@ -2,105 +2,79 @@
 <head>
   <meta charset="UTF-8">
   <title>Check-In</title>
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.17.1/firebase-database.js"></script>
 </head>
 <body>
   <h1>Check-In</h1>
-  <div>
-    <label for="name-input">Navn:</label>
-    <input type="text" id="name-input">
-  </div>
-  <button id="check-in-button">Check-In</button>
+  <input type="text" id="name" placeholder="Enter your name">
+  <button id="checkin-button">Check-In</button>
   <div id="result"></div>
-  <ul id="check-in-list"></ul>
-
+  <ul id="checkin-list"></ul>
+  
   <script>
-    // Initialize Firebase
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
-    const nameInput = document.querySelector("#name-input");
-    const checkInButton = document.querySelector("#check-in-button");
-    const result = document.querySelector("#result");
-    const checkInList = document.querySelector("#check-in-list");
-
-    let checkIns = [];
-
-    checkInButton.addEventListener("click", function() {
-      const currentTime = new Date().getHours() + new Date().getMinutes() / 60;
-      if (currentTime < 7.5 || currentTime > 16.25) {
-        result.innerHTML = "Hvad laver du på skolen nu? TAG HJEM!";
-        return;
-      }
-
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          const targetLatitude = 56.15369;
-          const targetLongitude = 10.20309;
-          const margin = 0.001; // 100m i grader
+    const checkinButton = document.getElementById('checkin-button');
+    const resultDiv = document.getElementById('result');
+    const checkinList = document.getElementById('checkin-list');
+    let checkins = [];
+    let previousDate = new Date();
     
-    if (
-      latitude > targetLatitude - margin &&
-      latitude < targetLatitude + margin &&
-      longitude > targetLongitude - margin &&
-      longitude < targetLongitude + margin
-    ) {
-      result.innerHTML = "Check-in success!";
-
-      const name = nameInput.value;
-      const date = new Date().toLocaleDateString();
-
-      const existingCheckIn = checkIns.find(
-        checkIn => checkIn.name === name && checkIn.date === date
-      );
-      if (existingCheckIn) {
-        result.innerHTML = "Du har allerede checket ind i dag.";
+    checkinButton.addEventListener('click', function() {
+      const name = document.getElementById('name').value;
+      if (!name) {
+        resultDiv.innerHTML = 'Please enter your name';
         return;
       }
-
-      const time = new Date().toLocaleTimeString();
-      const checkIn = { name, date, time };
-      checkIns.push(checkIn);
-
-      checkInList.innerHTML += `
-        <li>
-          Name: ${checkIn.name}<br>
-          Date: ${checkIn.date}<br>
-          Time: ${checkIn.time}
-        </li>
-      `;
-    } else {
-      result.innerHTML = "Check-in failed.";
+      
+      navigator.geolocation.getCurrentPosition(function(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        const targetLatitude = 37.7749;
+        const targetLongitude = -122.4194;
+        const range = 0.5; // in kilometers
+        
+        const distance = calculateDistance(latitude, longitude, targetLatitude, targetLongitude);
+        if (distance <= range) {
+          resultDiv.innerHTML = 'Success! You are within range.';
+          const date = new Date();
+          checkins.push({name, date});
+          updateCheckinList();
+        } else {
+          resultDiv.innerHTML = 'Failure! You are not within range.';
+        }
+      });
+    });
+    
+    function updateCheckinList() {
+      checkinList.innerHTML = '';
+      const currentDate = new Date();
+      if (currentDate.getDate() != previousDate.getDate()) {
+        checkins = [];
+        previousDate = currentDate;
+      }
+      for (let i = 0; i < checkins.length; i++) {
+        const checkin = checkins[i];
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `${checkin.name} checked in on ${checkin.date}`;
+        checkinList.appendChild(listItem);
+      }
     }
-  });
-} else {
-     result.innerHTML = "Check-in failed.";
-  }
-});
-} else {
-  result.innerHTML = "Geolocation is not supported by your browser.";
+    
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const radius = 6371; // Earth's radius in kilometers
+      const dLat = toRadians(lat2-lat1);
+      const dLon = toRadians(lon2-lon1);
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2)
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      const distance = radius * c;
+    return distance;
 }
-});
-setInterval(function() {
-const today = new Date().toLocaleDateString();
-if (checkIns.length === 0 || checkIns[0].date !== today) {
-checkIns = [];
-checkInList.innerHTML = "";
+
+function toRadians(degree) {
+  return degree * (Math.PI/180);
 }
-}, 86400000); // Resets the check-in list every day (24 hours in milliseconds)
-</script>
+   </script>
 </body>
 </html>
+
