@@ -27,9 +27,9 @@
       navigator.geolocation.getCurrentPosition(function(position) {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
-        const targetLatitude = 37.7749;
-        const targetLongitude = -122.4194;
-        const range = 0.5; // in kilometers
+        const targetLatitude = 56.15386;
+        const targetLongitude = 10.20321;
+        const range = 0.1; // in kilometers
         
         const distance = calculateDistance(latitude, longitude, targetLatitude, targetLongitude);
         if (distance <= range) {
