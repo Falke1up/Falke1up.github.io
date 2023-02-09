@@ -1,80 +1,117 @@
-<html>
+html>
 <head>
   <meta charset="UTF-8">
-  <title>Check-In</title>
+  <title>Check-In System</title>
 </head>
 <body>
-  <h1>Check-In</h1>
-  <input type="text" id="name" placeholder="Enter your name">
-  <button id="checkin-button">Check-In</button>
-  <div id="result"></div>
-  <ul id="checkin-list"></ul>
-  
+  <h1>Check-In System</h1>
+  <input type="text" id="userName" placeholder="Enter your name">
+  <button id="checkInBtn">Check-In</button>
+  <div id="message">
+    <!-- Message will be displayed here -->
+  </div>
+  <ul id="checkInList">
+    <!-- Check-in information will be displayed here -->
+  </ul>
   <script>
-    const checkinButton = document.getElementById('checkin-button');
-    const resultDiv = document.getElementById('result');
-    const checkinList = document.getElementById('checkin-list');
-    let checkins = [];
+    // Get current date and time
+    const currentDate = new Date();
     let previousDate = new Date();
     
-    checkinButton.addEventListener('click', function() {
-      const name = document.getElementById('name').value;
-      if (!name) {
-        resultDiv.innerHTML = 'Please enter your name';
-        return;
-      }
+    // Get check-in button and message div
+    const checkInBtn = document.getElementById("checkInBtn");
+    const messageDiv = document.getElementById("message");
+    
+    // Check-in information array
+    let checkIns = [];
+    
+    // Target location
+    const targetLocation = {
+      lat: 56.15386,
+      lng: 10.20321
+    };
+    
+    // Check if user is within 100m of target location
+    const isWithinRange = (userLocation) => {
+      return (
+        Math.abs(userLocation.lat - targetLocation.lat) < 0.001 &&
+        Math.abs(userLocation.lng - targetLocation.lng) < 0.001
+      );
+    };
+    
+    // Check if current date is different from previous date
+    const isNewDay = () => {
+      return (
+        currentDate.getDate() !== previousDate.getDate() ||
+        currentDate.getMonth() !== previousDate.getMonth() ||
+        currentDate.getFullYear() !== previousDate.getFullYear()
+      );
+    };
+    
+    // Reset check-in information
+    const resetCheckIns = () => {
+      checkIns = [];
+      document.getElementById("checkInList").innerHTML = "";
+    };
+    
+    // Display check-in information
+    const displayCheckIns = () => {
+      let checkInList = document.getElementById("checkInList");
+      checkInList.innerHTML = "";
       
-      navigator.geolocation.getCurrentPosition(function(position) {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        const targetLatitude = 56.15386;
-        const targetLongitude = 10.20321;
-        const range = 0.1; // in kilometers
-        
-        const distance = calculateDistance(latitude, longitude, targetLatitude, targetLongitude);
-        if (distance <= range) {
-          resultDiv.innerHTML = 'Success! You are within range.';
-          const date = new Date();
-          checkins.push({name, date});
-          updateCheckinList();
-        } else {
-          resultDiv.innerHTML = 'Failure! You are not within range.';
-        }
+      checkIns.forEach(checkIn => {
+        let checkInItem = document.createElement("li");
+        checkInItem.innerHTML = `Name: ${checkIn.name} Date: ${checkIn.date} Time: ${checkIn.time}`;
+        checkInList.appendChild(checkInItem);
       });
-    });
+    };
     
-    function updateCheckinList() {
-      checkinList.innerHTML = '';
-      const currentDate = new Date();
-      if (currentDate.getDate() != previousDate.getDate()) {
-        checkins = [];
-        previousDate = currentDate;
+    // Get user location and check if they are within range
+    const checkIn = () => {
+      // Get user name
+      const userName = document.getElementById("userName").value;
+      
+      // Get user location
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const userLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          
+          // Check if user is within range
+          if (isWithinRange(userLocation)) {
+            // Display success message
+messageDiv.innerHTML = "Check-In Successful!";
+
+// Store check-in information
+checkIns.push({
+name: userName,
+date: currentDate.toDateString(),
+time: currentDate.toLocaleTimeString()
+});
+        
+        // Display check-in information
+        displayCheckIns();
+      } else {
+        // Display failure message
+        messageDiv.innerHTML = "Check-In Failed: Not within range.";
       }
-      for (let i = 0; i < checkins.length; i++) {
-        const checkin = checkins[i];
-        const listItem = document.createElement('li');
-        listItem.innerHTML = `${checkin.name} checked in on ${checkin.date}`;
-        checkinList.appendChild(listItem);
-      }
+    },
+    error => {
+      messageDiv.innerHTML = "Check-In Failed: Could not retrieve location.";
     }
-    
-    function calculateDistance(lat1, lon1, lat2, lon2) {
-      const radius = 6371; // Earth's radius in kilometers
-      const dLat = toRadians(lat2-lat1);
-      const dLon = toRadians(lon2-lon1);
-      const a = 
-        Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * 
-        Math.sin(dLon/2) * Math.sin(dLon/2)
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      const distance = radius * c;
-    return distance;
+  );
+};
+
+// Check if it's a new day and reset check-ins if necessary
+if (isNewDay()) {
+  previousDate = currentDate;
+  resetCheckIns();
 }
 
-function toRadians(degree) {
-  return degree * (Math.PI/180);
-}
-   </script>
+// Add event listener to check-in button
+checkInBtn.addEventListener("click", checkIn);
+  </script>
 </body>
 </html>
-
