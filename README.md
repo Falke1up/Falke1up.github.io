@@ -1,117 +1,99 @@
-html>
+<html>
 <head>
   <meta charset="UTF-8">
   <title>Check-In System</title>
-</head>
-<body>
-  <h1>Check-In System</h1>
-  <input type="text" id="userName" placeholder="Enter your name">
-  <button id="checkInBtn">Check-In</button>
-  <div id="message">
-    <!-- Message will be displayed here -->
-  </div>
-  <ul id="checkInList">
-    <!-- Check-in information will be displayed here -->
-  </ul>
-  <script>
-    // Get current date and time
-    const currentDate = new Date();
-    let previousDate = new Date();
-    
-    // Get check-in button and message div
-    const checkInBtn = document.getElementById("checkInBtn");
-    const messageDiv = document.getElementById("message");
-    
-    // Check-in information array
-    let checkIns = [];
-    
-    // Target location
-    const targetLocation = {
-      lat: 56.15386,
-      lng: 10.20321
-    };
-    
-    // Check if user is within 100m of target location
-    const isWithinRange = (userLocation) => {
-      return (
-        Math.abs(userLocation.lat - targetLocation.lat) < 0.001 &&
-        Math.abs(userLocation.lng - targetLocation.lng) < 0.001
-      );
-    };
-    
-    // Check if current date is different from previous date
-    const isNewDay = () => {
-      return (
-        currentDate.getDate() !== previousDate.getDate() ||
-        currentDate.getMonth() !== previousDate.getMonth() ||
-        currentDate.getFullYear() !== previousDate.getFullYear()
-      );
-    };
-    
-    // Reset check-in information
-    const resetCheckIns = () => {
-      checkIns = [];
-      document.getElementById("checkInList").innerHTML = "";
-    };
-    
-    // Display check-in information
-    const displayCheckIns = () => {
-      let checkInList = document.getElementById("checkInList");
-      checkInList.innerHTML = "";
-      
-      checkIns.forEach(checkIn => {
-        let checkInItem = document.createElement("li");
-        checkInItem.innerHTML = `Name: ${checkIn.name} Date: ${checkIn.date} Time: ${checkIn.time}`;
-        checkInList.appendChild(checkInItem);
-      });
-    };
-    
-    // Get user location and check if they are within range
-    const checkIn = () => {
-      // Get user name
-      const userName = document.getElementById("userName").value;
-      
-      // Get user location
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          const userLocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
-          
-          // Check if user is within range
-          if (isWithinRange(userLocation)) {
-            // Display success message
-messageDiv.innerHTML = "Check-In Successful!";
-
-// Store check-in information
-checkIns.push({
-name: userName,
-date: currentDate.toDateString(),
-time: currentDate.toLocaleTimeString()
-});
-        
-        // Display check-in information
-        displayCheckIns();
-      } else {
-        // Display failure message
-        messageDiv.innerHTML = "Check-In Failed: Not within range.";
-      }
-    },
-    error => {
-      messageDiv.innerHTML = "Check-In Failed: Could not retrieve location.";
+  <style>
+    .check-in-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 30px;
     }
-  );
-};
-
-// Check if it's a new day and reset check-ins if necessary
-if (isNewDay()) {
-  previousDate = currentDate;
-  resetCheckIns();
+    .check-in-form input[type="text"] {
+  margin-bottom: 10px;
+  padding: 10px;
+  font-size: 18px;
 }
 
-// Add event listener to check-in button
-checkInBtn.addEventListener("click", checkIn);
-  </script>
+.check-in-form button {
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: lightblue;
+  border: none;
+  border-radius: 5px;
+}
+
+.check-ins {
+  margin: 30px;
+}
+
+.check-ins h3 {
+  margin-bottom: 10px;
+}
+
+.check-ins ul {
+  list-style: none;
+  padding: 0;
+}
+
+.check-ins li {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: lightgray;
+  border-radius: 5px;
+}
+    </style>
+</head>
+<body>
+  <div class="check-in-form">
+    <input type="text" id="userName" placeholder="Enter your name">
+    <button id="checkInBtn">Check-In</button>
+  </div>
+  <div id="message" class="message"></div>
+  <div class="check-ins">
+    <h3>Check-Ins</h3>
+    <ul id="checkInsList"></ul>
+  </div>
+  <?php
+    // Target location
+    $targetLatitude = 56.15386;
+    $targetLongitude = 10.20321;
+    
+    // Check if the check-in form has been submitted
+    if (isset($_POST["checkIn"])) {
+      // Get user's location
+      $userLatitude = $_POST["latitude"];
+      $userLongitude = $_POST["longitude"];
+      
+      // Calculate distance between user's location and target location
+      $distance = calculateDistance($userLatitude, $userLongitude, $targetLatitude, $targetLongitude);
+      
+     // Check if within range
+if ($distance <= 100) {
+// Store check-in information
+$checkIns = json_decode(file_get_contents("check-ins.json"), true);
+$checkIns[] = [
+"name" => $_POST["name"],
+"date" => date("F j, Y"),
+"time" => date("g:i a")
+];
+file_put_contents("check-ins.json", json_encode($checkIns));
+        
+  // Display success message
+    echo "<script>document.querySelector('.message').innerHTML = 'Check-In Successful!';</script>";
+    
+    // Update check-ins list
+    $checkInsList = "";
+    foreach ($checkIns as $checkIn) {
+      $checkInsList .= "<li>Name: {$checkIn["name"]}<br>Date: {$checkIn["date"]}<br>Time: {$checkIn["time"]}</li>";
+    }
+    echo "<script>document.querySelector('#checkInsList').innerHTML = '{$checkInsList}';</script>";
+  } else {
+    // Display failure message
+    echo "<script>document.querySelector('.message').innerHTML = 'Check-In Failed: Not within 100m of target location.';</script>";
+  }
+}
+?>
+
 </body>
 </html>
