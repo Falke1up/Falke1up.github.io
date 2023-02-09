@@ -32,8 +32,8 @@
         navigator.geolocation.getCurrentPosition(function(position) {
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
-          const targetLatitude = 56.15867;
-          const targetLongitude = 10.21570;
+          const targetLatitude = 56.15386;
+          const targetLongitude = 10.20321;
           const margin = 0.001; // 100m i grader
 
           if (
