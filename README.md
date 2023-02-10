@@ -1,43 +1,37 @@
-<!DOCTYPE html>
 <html>
   <head>
     <style>
-      .race-track {
+      form {
         width: 500px;
-        height: 200px;
-        border: 1px solid black;
-        position: relative;
         margin: 0 auto;
+        text-align: center;
       }
       
-      .duck {
-        width: 50px;
-        height: 50px;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        background-image: url('duck.png');
-        background-size: contain;
-        animation: swim 5s linear infinite;
+      input[type="text"] {
+        padding: 10px;
+        font-size: 16px;
+        width: 60%;
+        margin-bottom: 20px;
       }
       
-      @keyframes swim {
-        from {
-          left: 0;
-        }
-        to {
-          left: 450px;
-        }
+      input[type="submit"] {
+        padding: 10px 20px;
+        background-color: green;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
       }
     </style>
   </head>
   <body>
-    <h1>Duck Racing</h1>
-    <div class="race-track">
-      <div class="duck" style="left: 10%"></div>
-      <div class="duck" style="left: 20%"></div>
-      <div class="duck" style="left: 30%"></div>
-      <div class="duck" style="left: 40%"></div>
-    </div>
+    <h1>Enter Participants</h1>
+    <form>
+      <input type="text" placeholder="Participant 1" required><br>
+      <input type="text" placeholder="Participant 2" required><br>
+      <input type="text" placeholder="Participant 3" required><br>
+      <input type="text" placeholder="Participant 4" required><br>
+      <input type="submit" value="Start Race">
+    </form>
   </body>
 </html>
