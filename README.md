@@ -1,37 +1,37 @@
 <html>
   <head>
     <style>
-      form {
-        width: 500px;
-        margin: 0 auto;
-        text-align: center;
+      .evil-face {
+        width: 200px;
+        height: 200px;
+        background-image: url('https://i.imgur.com/tL7uTqT.png');
+        background-size: cover;
+        animation: evil-laugh 1s linear infinite;
       }
       
-      input[type="text"] {
-        padding: 10px;
-        font-size: 16px;
-        width: 60%;
-        margin-bottom: 20px;
-      }
-      
-      input[type="submit"] {
-        padding: 10px 20px;
-        background-color: green;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+      @keyframes evil-laugh {
+        0% {
+          transform: rotate(0deg);
+        }
+        20% {
+          transform: rotate(10deg);
+        }
+        40% {
+          transform: rotate(-10deg);
+        }
+        60% {
+          transform: rotate(10deg);
+        }
+        80% {
+          transform: rotate(-10deg);
+        }
+        100% {
+          transform: rotate(0deg);
+        }
       }
     </style>
   </head>
   <body>
-    <h1>Enter Participants</h1>
-    <form>
-      <input type="text" placeholder="Participant 1" required><br>
-      <input type="text" placeholder="Participant 2" required><br>
-      <input type="text" placeholder="Participant 3" required><br>
-      <input type="text" placeholder="Participant 4" required><br>
-      <input type="submit" value="Start Race">
-    </form>
+    <div class="evil-face"></div>
   </body>
 </html>
