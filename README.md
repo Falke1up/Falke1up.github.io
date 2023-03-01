@@ -1,37 +1,29 @@
 <html>
   <head>
-    <style>
-      .evil-face {
-        width: 200px;
-        height: 200px;
-        background-image: url('https://i.imgur.com/tL7uTqT.png');
-        background-size: cover;
-        animation: evil-laugh 1s linear infinite;
-      }
-      
-      @keyframes evil-laugh {
-        0% {
-          transform: rotate(0deg);
-        }
-        20% {
-          transform: rotate(10deg);
-        }
-        40% {
-          transform: rotate(-10deg);
-        }
-        60% {
-          transform: rotate(10deg);
-        }
-        80% {
-          transform: rotate(-10deg);
-        }
-        100% {
-          transform: rotate(0deg);
-        }
-      }
-    </style>
+    <title>Guess the Number Game</title>
   </head>
   <body>
-    <div class="evil-face"></div>
+    <h1>Guess the Number Game</h1>
+    <p>Guess a number between 1 and 10:</p>
+    <input type="text" id="guess" name="guess">
+    <button onclick="checkGuess()">Submit</button>
+    <p id="result"></p>
+
+    <script>
+      // Generate a random number between 1 and 10
+      const randomNumber = Math.floor(Math.random() * 10) + 1;
+
+      function checkGuess() {
+        // Get the player's guess
+        const guess = parseInt(document.getElementById("guess").value);
+
+        // Check if the guess is correct
+        if (guess === randomNumber) {
+          document.getElementById("result").innerHTML = "Congratulations! You guessed the correct number.";
+        } else {
+          document.getElementById("result").innerHTML = "Sorry, that's not the correct number. Please try again.";
+        }
+      }
+    </script>
   </body>
 </html>
