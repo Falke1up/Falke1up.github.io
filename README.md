@@ -1,29 +1,65 @@
 <html>
   <head>
-    <title>Guess the Number Game</title>
+    <meta charset="UTF-8">
+    <title>Kuhstall - Garderobe</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      h1 {
+        font-size: 36px;
+        text-align: center;
+        margin-top: 20px;
+      }
+      p {
+        font-size: 24px;
+        margin: 20px 0;
+        text-align: center;
+      }
+      #ticket {
+        background-color: #ffffff;
+        border: 2px solid #007bff;
+        padding: 20px;
+        text-align: center;
+      }
+      #used {
+        background-color: #f8f9fa;
+        color: #6c757d;
+        text-decoration: line-through;
+      }
+    </style>
   </head>
   <body>
-    <h1>Guess the Number Game</h1>
-    <p>Guess a number between 1 and 10:</p>
-    <input type="text" id="guess" name="guess">
-    <button onclick="checkGuess()">Submit</button>
-    <p id="result"></p>
+    <h1>Kuhstall - Garderobe</h1>
+    <div id="ticket">
+      <p>Ticket number: <span id="randomNumber"></span></p>
+      <p>Valid from: <span id="loadTime"></span></p>
+    </div>
+    <div>
+      <input type="range" min="0" max="1" value="0" id="slider">
+    </div>
 
     <script>
-      // Generate a random number between 1 and 10
-      const randomNumber = Math.floor(Math.random() * 10) + 1;
-
-      function checkGuess() {
-        // Get the player's guess
-        const guess = parseInt(document.getElementById("guess").value);
-
-        // Check if the guess is correct
-        if (guess === randomNumber) {
-          document.getElementById("result").innerHTML = "Congratulations! You guessed the correct number.";
-        } else {
-          document.getElementById("result").innerHTML = "Sorry, that's not the correct number. Please try again.";
-        }
-      }
+      // Generate a random number between 1 and 300
+      const randomNumber = Math.floor(Math.random() * 300) + 1;
+      
+      // Get the current date and time
+      const loadTime = new Date();
+      
+      // Update the HTML elements with the random number and load time
+      document.getElementById("randomNumber").textContent = randomNumber;
+      document.getElementById("loadTime").textContent = loadTime.toLocaleString();
+      
+      // Add an event listener to the slider
+      const slider = document.getElementById("slider");
+      slider.addEventListener("input", function() {
+        // If the slider is used, add the "used" class to the ticket element
+        const ticket = document.getElementById("ticket");
+        ticket.classList.add("used");
+      });
     </script>
   </body>
 </html>
+
