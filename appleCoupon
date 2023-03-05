@@ -1,0 +1,36 @@
+{
+  "coupon": {
+    "serialNumber": "237",
+    "backgroundColor": "rgb(255, 215, 0)",
+    "logo": {
+      "text": "My Coupon",
+      "image": "https://example.com/logo.png",
+      "textAlignment": "PKTextAlignmentCenter"
+    },
+    "couponBarcode": {
+      "format": "PKBarcodeFormatQR",
+      "message": "237",
+      "messageEncoding": "iso-8859-1"
+    },
+    "headerFields": [
+      {
+        "key": "discount",
+        "label": "Discount",
+        "value": "20% off your purchase"
+      }
+    ],
+    "backFields": [
+      {
+        "key": "terms",
+        "label": "Terms and Conditions",
+        "value": "Not valid with any other offer. One coupon per customer. Valid only at participating locations. No cash value."
+      },
+      {
+        "key": "slider",
+        "label": "Swipe to use coupon",
+        "value": "0",
+        "changeMessage": "Coupon has been used"
+      }
+    ]
+  }
+}
