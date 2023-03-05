@@ -7,6 +7,6 @@
     <title>Robe</title>
 </head>
 <body>
-    <a href="https://drive.google.com/file/d/1VyFPWSiKBXDqLZqM4aynDdL1aexsZm37/view?usp=share_link">Download garderobe nr</a>
+    <a href="/robe.pkpass">Download garderobe nr</a>
 </body>
 </html>
